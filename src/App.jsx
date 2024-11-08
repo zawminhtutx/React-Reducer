@@ -1,44 +1,44 @@
-import { useReducer } from "react";
+import { useState,useEffect } from "react";
 
-const firstReducer = (state, action) => {
-  switch (action.type) {
-    case "increment":
-      return {
-        ...state,
-        count: state.count + 1,
-      };
-    case "decrement":
-      return {
-        ...state,
-        count: state.count > 0 ? state.count - 1 : (state.count = 0),
-      };
-    case "updateKey":
-      return {
-        ...state,
-        key: action.payload
-      }; 
-    default:
-      return state;
-  }
-};
+
 function App() {
+  useEffect(() => {
+    fetchData()
+  },[]);
+  const [todo,setTodo] = useState([]);
+  const fetchData = async () => {
+    const response = await fetch('https://jsonplaceholder.org/comments');
+    const data = await response.json();
+    setTodo(data);
+  }
   // const [key, setKey] = useState("");
   // const [count, setCount] = useState(0);
-  const [state, dispatch] = useReducer(firstReducer, { key: "", count: 0 });
-  const ACTION={
-    INCREMENT:"increment",
-    DECREMENT:"decrement",
-    UPDATE_KEY:"updateKey"
-  }
+
   return (
-    <>
-      <h1>Exercise React</h1>
-      <input type='text' onChange={(e) => dispatch({ type: ACTION.UPDATE_KEY, payload: e.target.value })}/>
-      <h1>You Key is - {state.key} </h1>
-      <button onClick={() => dispatch({ type: ACTION.DECREMENT })}>-</button>
-      <span>{state.count}</span>
-      <button onClick={() => dispatch({ type: ACTION.INCREMENT })}>+</button>
-    </>
+    
+      <section>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Post ID</th>
+              <th>User ID</th>
+              <th>Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            {todo.map((item) => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.postId}</td>
+                <td>{item.userId}</td>
+                <td>{item.comment}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    
   );
 }
 
